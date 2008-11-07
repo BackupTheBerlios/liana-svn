@@ -72,6 +72,14 @@ public class AwtResponderRegistrationTool
 				MouseClickedFor annot = (MouseClickedFor)m.getAnnotation(MouseClickedFor.class);
 				sources = locateSources(annot.componentNames(), component, new HashSet<Object>());
 				registerMouseClickedFor(sources, responder, m, annot);
+			} else if (m.isAnnotationPresent(MouseDoubleClickedFor.class)) {
+				MouseDoubleClickedFor annot = (MouseDoubleClickedFor)m.getAnnotation(MouseDoubleClickedFor.class);
+				sources = locateSources(annot.componentNames(), component, new HashSet<Object>());
+				registerMouseDoubleClickedFor(sources, responder, m, annot);
+			} else if (m.isAnnotationPresent(MousePopupClickedFor.class)) {
+				MousePopupClickedFor annot = (MousePopupClickedFor)m.getAnnotation(MousePopupClickedFor.class);
+				sources = locateSources(annot.componentNames(), component, new HashSet<Object>());
+				registerMousePopupClickedFor(sources, responder, m, annot);
 			} else if (m.isAnnotationPresent(WindowActivatedFor.class)) {
 				WindowActivatedFor annot = (WindowActivatedFor)m.getAnnotation(WindowActivatedFor.class);
 				sources = locateSources(annot.componentNames(), component, new HashSet<Object>());
@@ -171,6 +179,42 @@ public class AwtResponderRegistrationTool
 	{
 		for (Object o : sources) {
 			MouseListenerEventHandler.bindMouseClickedEventHandler(
+					o, responder, m.getName()
+				);
+		}
+	}
+	
+	/**
+	 * Registers the responder for the given event sources.
+	 * @param sources The sources of action events.
+	 * @param responder The responder to react to the events.
+	 * @param m The method called in response to the event.
+	 * @param a The annotation on the method.
+	 */
+	protected void registerMouseDoubleClickedFor(
+			Set<Object>sources, Object responder, Method m, MouseDoubleClickedFor a
+		)
+	{
+		for (Object o : sources) {
+			MouseListenerEventHandler.bindMouseDoubleClickedEventHandler(
+					o, responder, m.getName()
+				);
+		}
+	}
+	
+	/**
+	 * Registers the responder for the given event sources.
+	 * @param sources The sources of action events.
+	 * @param responder The responder to react to the events.
+	 * @param m The method called in response to the event.
+	 * @param a The annotation on the method.
+	 */
+	protected void registerMousePopupClickedFor(
+			Set<Object>sources, Object responder, Method m, MousePopupClickedFor a
+		)
+	{
+		for (Object o : sources) {
+			MouseListenerEventHandler.bindMousePopupClickedEventHandler(
 					o, responder, m.getName()
 				);
 		}

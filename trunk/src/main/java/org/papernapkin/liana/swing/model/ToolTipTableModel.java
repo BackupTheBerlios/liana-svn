@@ -1,4 +1,6 @@
-package org.papernapkin.liana.swing.table;
+package org.papernapkin.liana.swing.model;
+
+import org.papernapkin.liana.swing.table.ExtJTable;
 
 /**
  * A model which can be set for ExtJTable and will provide tooltip text for

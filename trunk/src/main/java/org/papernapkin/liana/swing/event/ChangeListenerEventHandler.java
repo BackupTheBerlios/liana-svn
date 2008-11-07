@@ -1,6 +1,6 @@
 package org.papernapkin.liana.swing.event;
 
-import java.awt.event.ActionListener;
+import javax.swing.event.ChangeListener;
 
 import org.papernapkin.liana.event.GenericEventHandler;
 import org.papernapkin.liana.event.ParameterInfo;
@@ -36,7 +36,7 @@ public final class ChangeListenerEventHandler extends GenericEventHandler
 		throws IllegalArgumentException
 	{
 		super(
-				ActionListener.class, eventSource,
+				ChangeListener.class, eventSource,
 				REGISTER_METHOD, UNREGISTER_METHOD
 			);
 	}

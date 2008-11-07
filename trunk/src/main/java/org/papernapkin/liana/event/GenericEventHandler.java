@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author pchapman
  */
-public class GenericEventHandler
+public abstract class GenericEventHandler
 	implements InvocationHandler
 {
 	// CONSTANTS
@@ -41,9 +41,10 @@ public class GenericEventHandler
 	
 	// CONSTRUCTORS
 	
+	private IEventCondition eventCondition;
+
 	/**
-	 * A private constructor.  This class can only be created through the
-	 * static method createHandler.
+	 * Creates a new instance.
 	 */
 	@SuppressWarnings("unchecked")
 	public GenericEventHandler(
@@ -52,9 +53,24 @@ public class GenericEventHandler
 		)
 		throws IllegalArgumentException
 	{
+		this(listenerClass, eventSource, registerMethod, unregisterMethod, null);
+	}
+	
+	/**
+	 * Creates a new instance.
+	 */
+	@SuppressWarnings("unchecked")
+	public GenericEventHandler(
+			Class listenerClass, Object eventSource,
+			String registerMethod, String unregisterMethod,
+			IEventCondition eventCondition
+		)
+		throws IllegalArgumentException
+	{
 		super();
 		
 		this.emulatedClass = listenerClass;
+		this.eventCondition = eventCondition;
 		this.eventSourceReference = new WeakReference<Object>(eventSource);
 		responders = new HashMap<String, ResponderInfo>();
 		
@@ -246,33 +262,37 @@ public class GenericEventHandler
 			try {
 				Object responder = info.getResponder();
 				if (responder != null) {
-					// Bind parameters, if necessary
-					ParameterInfo[] paramBindings = info.getParameterBindings();
-					Object[] parameters = new Object[paramBindings.length];
-					ParameterInfo pInfo;
-					for (int i = 0; i < paramBindings.length; i++) {
-						pInfo = paramBindings[i];
-						if (pInfo.getParameterValueMethodChain() == null) {
-							// No method of the parameter was bound, so we
-							// pass the parameter value itself.
-							parameters[i] = args[pInfo.getEventArgumentIndex()];
-						} else {
-							// A method of the parameter was bound, so we
-							// call it, and any methods chained after that.  We
-							// then pass the final return value as the
-							// parameter value.
-							Object o = null;
-							for (Method m : pInfo.getParameterValueMethodChain()) {
-								if (o == null) {
-									o = args[pInfo.getEventArgumentIndex()];
+					// We have a responder.  If there is a test available, call
+					// it to determine whether the responder is to be called.
+					if (eventCondition == null || eventCondition.testEvent(method, args)) {
+						// Bind parameters, if necessary
+						ParameterInfo[] paramBindings = info.getParameterBindings();
+						Object[] parameters = new Object[paramBindings.length];
+						ParameterInfo pInfo;
+						for (int i = 0; i < paramBindings.length; i++) {
+							pInfo = paramBindings[i];
+							if (pInfo.getParameterValueMethodChain() == null) {
+								// No method of the parameter was bound, so we
+								// pass the parameter value itself.
+								parameters[i] = args[pInfo.getEventArgumentIndex()];
+							} else {
+								// A method of the parameter was bound, so we
+								// call it, and any methods chained after that.  We
+								// then pass the final return value as the
+								// parameter value.
+								Object o = null;
+								for (Method m : pInfo.getParameterValueMethodChain()) {
+									if (o == null) {
+										o = args[pInfo.getEventArgumentIndex()];
+									}
+									o = m.invoke(o, new Object[0]);
 								}
-								o = m.invoke(o, new Object[0]);
+								parameters[i] = o;
 							}
-							parameters[i] = o;
 						}
+						// Call the responder method
+						info.getResponderMethod().invoke(responder, parameters);
 					}
-					// Call the responder method
-					info.getResponderMethod().invoke(responder, parameters);
 				}
 			} catch (IllegalAccessException iae) {
 				logger.error("Unable to access the responder's method", iae);

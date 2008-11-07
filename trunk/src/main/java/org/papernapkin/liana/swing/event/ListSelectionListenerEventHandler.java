@@ -66,11 +66,11 @@ public final class ListSelectionListenerEventHandler extends GenericEventHandler
 					);
 			params[1] =
 				new ParameterInfo(
-						1, ListSelectionEvent.class, "getLastIndex"
+						0, ListSelectionEvent.class, "getLastIndex"
 					);
 			params[2] =
 				new ParameterInfo(
-						2, ListSelectionEvent.class, "getValueIsAdjusting"
+						0, ListSelectionEvent.class, "getValueIsAdjusting"
 					);
 		} else {
 			params = new ParameterInfo[0];

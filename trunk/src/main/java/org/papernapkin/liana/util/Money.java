@@ -100,12 +100,7 @@ import java.io.*; // Java I/O
  *
  */
 
-public class Money // Money Class
-
-		implements Cloneable, // Money objects can be cloned
-
-		Serializable // Money objects are serializable
-
+public class Money implements Cloneable, Serializable
 {
 
 	private static final long serialVersionUID = 1L;

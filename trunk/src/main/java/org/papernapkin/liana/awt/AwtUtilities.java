@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 
@@ -41,11 +41,19 @@ public class AwtUtilities {
 	}
 	
 	private static void _center(Component comp) {
+		// Get screen and component sizes
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension size = comp.getSize();
-		Point location = new Point();
-		location.y = (int)Math.floor((screensize.height - size.height) / 2);
-		location.x = (int)Math.floor((screensize.width - size.width) / 2);
-		comp.setLocation(location);
+		Rectangle bounds = comp.getBounds();
+		// Ensure the component isn't larger than the screen
+		if (bounds.height > screensize.height) {
+			bounds.height = screensize.height;
+		}
+		if (bounds.width > screensize.width) {
+			bounds.width = screensize.width;
+		}
+		// Center the component
+		bounds.y = (int)Math.floor((screensize.height - bounds.height) / 2);
+		bounds.x = (int)Math.floor((screensize.width - bounds.width) / 2);
+		comp.setBounds(bounds);
 	}
 }

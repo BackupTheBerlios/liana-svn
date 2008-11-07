@@ -1,4 +1,4 @@
-package org.papernapkin.liana.swing.table;
+package org.papernapkin.liana.swing.model;
 
 import java.awt.*;
 import java.awt.event.*;

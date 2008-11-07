@@ -16,6 +16,8 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.JTextComponent;
 
+import org.papernapkin.liana.swing.model.ToolTipTableModel;
+
 /**
  * An improved version of JTable.  This version fixes a problem with JTable
  * where data entered into cells is not saved when focus is lost due to mouse
