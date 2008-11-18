@@ -4,7 +4,7 @@
   <groupId>org.papernapkin</groupId>
   <artifactId>liana</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.3-SNAPSHOT</version>
+  <version>1.2.3</version>
   <name>Liana swing utility library</name>
   <url>http://maven.apache.org</url>
   <build>

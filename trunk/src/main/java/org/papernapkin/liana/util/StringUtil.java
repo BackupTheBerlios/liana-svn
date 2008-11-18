@@ -217,6 +217,28 @@ public class StringUtil
 	}
 	
 	/**
+	 * Returns null if s is null or is zero length.
+	 * Else, returns the string.
+	 */
+	public static String nullableNotEmpty(String s) {
+		if (s == null || s.length() == 0) {
+			return null;
+		}
+		return s;
+	}
+	
+	/**
+	 * Returns null if s is null or zero length after being trimmed.
+	 * Else, returns the trimmed string.
+	 */
+	public static String nullableNotEmptyTrimmed(String s) {
+		if (s == null) {
+			return null;
+		}
+		return nullableNotEmpty(s.trim());
+	}
+	
+	/**
 	 * Replaces characters that are special in HTML with their equivelent
 	 * entitites (such as replacing an ampersand with "&amp;").
 	 * @param s The string to parse.
@@ -563,5 +585,28 @@ public class StringUtil
 			}
 		}
 		return searchList;
+	}
+	
+	/**
+	 * Replaces placeholders with values.
+	 * @param s The string to operate on.
+	 * @param messageargs values that will be used to replace placeholders in
+	 *                    the string.  The placeholders should take the form
+	 *                    of {n} where n is the position of the arg.  The first
+	 *                    arg will replace {1}, the second arg will replace
+	 *                    {2}, etc.
+	 */
+	public static String replaceArgs(String s, Object ... args) {
+		StringBuilder sb;
+		String val;
+		for (int i = 0; i < args.length; i++) {
+			sb = new StringBuilder();
+			sb.append('{');
+			sb.append(i + 1);
+			sb.append('}');
+			val = args[i] == null ? "null" : args[i].toString();
+			s = s.replace(sb.toString(), val);
+		}
+		return s;
 	}
 }
