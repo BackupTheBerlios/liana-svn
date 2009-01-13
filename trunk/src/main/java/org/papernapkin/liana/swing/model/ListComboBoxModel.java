@@ -153,6 +153,17 @@ public class ListComboBoxModel<T> extends AbstractListModel
 		}
 	}
 	
+	public void fireObjectChanged(T item) {
+		int i = indexOf(item);
+		if (i > -1) {
+			fireContentsChanged(this, i, i);
+		}
+	}
+	
+	public int indexOf(T item) {
+		return this.data.indexOf(item);
+	}
+	
 	/**
 	 * Inserts the item into the indicated index, pushing all existing items
 	 * from that index on higher in the list.

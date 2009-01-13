@@ -128,6 +128,13 @@ public abstract class ListTableModel<T> extends AbstractTableModel
 		}
 	}
 	
+	public void fireObjectEdited(T item) {
+		int i = this.data.indexOf(item);
+		if (i > -1) {
+			fireTableRowsUpdated(i, i);
+		}
+	}
+	
 	/**
 	 * Inserts the item into the indicated index, pushing all existing items
 	 * from that index on higher in the list.
