@@ -9,6 +9,8 @@ import javax.swing.JTable;
  * A class used to fix a cell edit bug in JTable where edited data is not
  * saved if the JTable looses focus due to mouse actions.
  *
+ * @depreciated use JTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+ *
  * @author pchapman
  */
 public class JTableCellEditPatch extends FocusAdapter
