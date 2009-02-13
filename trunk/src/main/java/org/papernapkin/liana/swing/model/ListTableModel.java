@@ -11,7 +11,9 @@ import javax.swing.table.AbstractTableModel;
 
 /**
  * A generified table model which holds a list of objects which can be easily
- * retrieved without casting.  Each row contains a unique object.
+ * retrieved without casting.  Each row contains a unique object.  Neither the
+ * list, nor this class are synchronized.  User code should ensure that this
+ * model's list is only modified on the EDT.
  * 
  * <p>This model should only be used if the items held in this model are not
  * contained in a usable data structure elsewhere.  See the warning in the

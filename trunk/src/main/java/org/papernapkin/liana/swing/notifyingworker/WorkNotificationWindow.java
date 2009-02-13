@@ -287,8 +287,8 @@ public class WorkNotificationWindow
 		} else {
 			thread = new SimpleNotifyingWorkerThread(r);
 		}
-		thread.addWorkerThreadListener(listener);
 		WorkNotificationPanel panel = new WorkNotificationPanel(thread.getName(), thread);
+		thread.addWorkerThreadListener(listener);
 		notificationPanels.add(panel);
 		displayPanel.add(panel.getComponent());
 		displayScrollPane.revalidate();

@@ -1,7 +1,9 @@
 package org.papernapkin.liana.swing.notifyingworker;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.Test;
@@ -16,6 +18,31 @@ import org.slf4j.LoggerFactory;
 public class TestWorkNotificationWindow
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Test
+	public void testSingleThread() {
+		for (int i = 0; i < 10; i++) {
+			List<NotifyingWorkerThread> threads = new ArrayList<NotifyingWorkerThread>();
+			threads.add(new NotifyingWorkerThread() {
+				@Override
+				public boolean work() {
+					for (int i = 0; i < 10;) {
+						try {
+							sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						if (i == 5) {
+							notifyListeners(new WorkerThreadEvent(this, new Throwable("Test")));
+						}
+						notifyListeners(new WorkerThreadEvent(this, 10, ++i));
+					}
+					return false;
+				}
+			});
+			WorkNotificationWindow.showWorkNotificationWindow(null, "Test", threads);
+		}
+	}
 	
 	@Test
 	public void testDialog() {

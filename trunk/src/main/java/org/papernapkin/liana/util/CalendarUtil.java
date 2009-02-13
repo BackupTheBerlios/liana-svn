@@ -321,11 +321,8 @@ public class CalendarUtil
     
     public static Calendar getWeekEnd(Calendar cal)
     {
-    	Calendar c = (Calendar)cal.clone();
-    	c.add(Calendar.DAY_OF_WEEK, (Calendar.SATURDAY - c.get(Calendar.DAY_OF_WEEK) - 1));
-    	c.set(Calendar.HOUR, 24);
-    	c.set(Calendar.MINUTE, 59);
-    	c.set(Calendar.MILLISECOND, 59);
+    	Calendar c = getWeekStart(cal);
+    	c.add(Calendar.DAY_OF_WEEK, 6);
     	return c;
     }
     
@@ -353,24 +350,22 @@ public class CalendarUtil
     
     public static Calendar getWeekEnd(int weekOfYear, int year)
     {
-    	// By definition (ISO 8601), the first week of a year contains January
-    	// 4 of that year.
     	Calendar cal = Calendar.getInstance();
-    	cal.set(Calendar.MONTH, Calendar.JANUARY);
-    	cal.set(Calendar.DAY_OF_MONTH, 4);
-    	cal.set(Calendar.YEAR, year);
-    	cal = getWeekEnd(cal);
-    	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear - 1);
+     	cal.set(Calendar.MONTH, Calendar.JANUARY);
+    	cal.set(Calendar.DAY_OF_MONTH, cal.getMinimalDaysInFirstWeek());
+     	cal.set(Calendar.YEAR, year);
+     	cal = getWeekEnd(cal);
+     	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear - 1);
     	return cal;
     }
     
     public static Calendar getWeekStart(Calendar cal)
     {
     	Calendar c = (Calendar)cal.clone();
-    	c.add(Calendar.DAY_OF_WEEK, Calendar.SUNDAY - c.get(Calendar.DAY_OF_WEEK));
-    	c.set(Calendar.HOUR, 0);
-    	c.set(Calendar.MINUTE, 0);
-    	c.set(Calendar.MILLISECOND, 0);
+    	c.add(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek() - c.get(Calendar.DAY_OF_WEEK));
+     	c.set(Calendar.HOUR, 0);
+     	c.set(Calendar.MINUTE, 0);
+     	c.set(Calendar.MILLISECOND, 0);
     	return c;
     }
     
@@ -398,15 +393,13 @@ public class CalendarUtil
     
     public static Calendar getWeekStart(int weekOfYear, int year)
     {
-    	// By definition (ISO 8601), the first week of a year contains January
-    	// 4 of that year.
     	Calendar cal = Calendar.getInstance();
-    	cal.set(Calendar.MONTH, Calendar.JANUARY);
-    	cal.set(Calendar.DAY_OF_MONTH, 4);
-    	cal.set(Calendar.YEAR, year);
-    	cal = getWeekStart(cal);
-    	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear - 1);
-    	return cal;
+     	cal.set(Calendar.MONTH, Calendar.JANUARY);
+    	cal.set(Calendar.DAY_OF_MONTH, cal.getMinimalDaysInFirstWeek());
+     	cal.set(Calendar.YEAR, year);
+     	cal = getWeekStart(cal);
+     	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear - 1);
+     	return cal;
     }
     
     public static final void main(String[] args) {
