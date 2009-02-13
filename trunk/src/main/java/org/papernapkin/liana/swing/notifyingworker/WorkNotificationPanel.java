@@ -30,6 +30,7 @@ public class WorkNotificationPanel
 	private NotifyingWorkerThread thread;
 	private boolean running = false;
 	private String text;
+	private WorkNotificationWindow wnwindow;
 
 	/** Creates a new instance with all default values.  No label and no thread to monitor. */
 	public WorkNotificationPanel() {
@@ -43,6 +44,10 @@ public class WorkNotificationPanel
 	
 	/** Creates a new instance with the given label that will monitor the given thread. */
 	public WorkNotificationPanel(String labeltext, NotifyingWorkerThread thread) {
+	}
+	
+	WorkNotificationPanel(WorkNotificationWindow wnwindow, String labeltext, NotifyingWorkerThread thread) {
+		this.wnwindow = wnwindow;
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		label = new JLabel(labeltext == null ? "" : labeltext);
@@ -164,5 +169,8 @@ public class WorkNotificationPanel
 			progressbar.setString("Done");
 		}
 		progressbar.setIndeterminate(false);
+		if (wnwindow != null) {
+			wnwindow.removeThread(thread);
+		}
 	}
 }

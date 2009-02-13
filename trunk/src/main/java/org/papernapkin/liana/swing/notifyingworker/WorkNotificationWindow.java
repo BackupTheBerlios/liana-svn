@@ -269,21 +269,6 @@ public class WorkNotificationWindow
 		wnw.setVisible(true);
 	}
 	
-	private WorkerThreadListener listener = new WorkerThreadListener() {
-		@Override public void errorNotified(WorkerThreadEvent event) {}
-
-		@Override public void messageNotified(WorkerThreadEvent event) {}
-
-		@Override public void progressNotified(WorkerThreadEvent event) {}
-
-		@Override public void startNotified(WorkerThreadEvent event) {}
-
-		@Override
-		public void stopNotified(WorkerThreadEvent event) {
-			removeThread(event.getSource());
-		}
-	};
-	
 	private void addRunnable(Runnable r) {
 		NotifyingWorkerThread thread;
 		if (r instanceof NotifyingWorkerThread) {
@@ -291,8 +276,7 @@ public class WorkNotificationWindow
 		} else {
 			thread = new SimpleNotifyingWorkerThread(r);
 		}
-		WorkNotificationPanel panel = new WorkNotificationPanel(thread.getName(), thread);
-		thread.addWorkerThreadListener(listener);
+		WorkNotificationPanel panel = new WorkNotificationPanel(this, thread.getName(), thread);
 		notificationPanels.add(panel);
 		displayPanel.add(panel.getComponent());
 		displayScrollPane.revalidate();
@@ -307,7 +291,7 @@ public class WorkNotificationWindow
 		}
 	}
 	
-	private void removeThread(NotifyingWorkerThread thread) {
+	void removeThread(NotifyingWorkerThread thread) {
 		int count = 0;
 		synchronized(threads) {
 			threads.remove(thread);
