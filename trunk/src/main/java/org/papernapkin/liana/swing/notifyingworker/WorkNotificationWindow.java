@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 
 import org.papernapkin.liana.awt.event.ActionFor;
@@ -124,12 +125,15 @@ public class WorkNotificationWindow
 		}
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Rectangle myBounds = new Rectangle(350, 180);
-		myBounds.x = (screenSize.width / 2) - (myBounds.x / 2);
-		myBounds.y = (screenSize.height / 2) - (myBounds.y / 2);
+		myBounds.x = (screenSize.width / 2) - (myBounds.width / 2);
+		myBounds.y = (screenSize.height / 2) - (myBounds.height / 2);
 		dialog.setBounds(myBounds);
 		dialog.setBackground(new Color(.85f,.85f,1f));
 		dialog.setLayout(null);
 		dialog.setUndecorated(true);
+		// The Alloy LAF does not honor setUndecorated(true) when using JDialog.setDefaultLookAndFeelDecorated(true).
+		// The below ensures that the LAF does not decorate the dialog
+		dialog.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 		
 		if (displayIcon == null) {
 			URL url = getClass().getClassLoader().getResource(DEFAULT_ICON_PATH);
