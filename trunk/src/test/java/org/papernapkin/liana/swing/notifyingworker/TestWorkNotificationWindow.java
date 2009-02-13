@@ -44,7 +44,7 @@ public class TestWorkNotificationWindow
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testDialog() {
 		Collection<Runnable> runnables = new LinkedList<Runnable>();
 		int count = computeRandom(5, 20);
