@@ -21,6 +21,7 @@ import javax.swing.table.AbstractTableModel;
  * 
  * @author pchapman
  */
+@SuppressWarnings("serial")
 public abstract class ListTableModel<T> extends AbstractTableModel
 	implements GenericTableModel<T>
 {
