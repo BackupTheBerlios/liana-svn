@@ -17,10 +17,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -134,6 +136,12 @@ public class WorkNotificationWindow
 		// The Alloy LAF does not honor setUndecorated(true) when using JDialog.setDefaultLookAndFeelDecorated(true).
 		// The below ensures that the LAF does not decorate the dialog
 		dialog.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+		((JComponent)dialog.getContentPane()).setBorder(
+				BorderFactory.createCompoundBorder(
+						BorderFactory.createMatteBorder(1, 1, 0, 0, new Color(.85f,.85f,1f)),
+						BorderFactory.createRaisedBevelBorder()
+					)
+			);
 		
 		if (displayIcon == null) {
 			URL url = getClass().getClassLoader().getResource(DEFAULT_ICON_PATH);
@@ -269,6 +277,21 @@ public class WorkNotificationWindow
 		wnw.setVisible(true);
 	}
 	
+	private WorkerThreadListener listener = new WorkerThreadListener() {
+		@Override public void errorNotified(WorkerThreadEvent event) {}
+
+		@Override public void messageNotified(WorkerThreadEvent event) {}
+
+		@Override public void progressNotified(WorkerThreadEvent event) {}
+
+		@Override public void startNotified(WorkerThreadEvent event) {}
+
+		@Override
+		public void stopNotified(WorkerThreadEvent event) {
+			removeThread(event.getSource());
+		}
+	};
+	
 	private void addRunnable(Runnable r) {
 		NotifyingWorkerThread thread;
 		if (r instanceof NotifyingWorkerThread) {
@@ -276,9 +299,21 @@ public class WorkNotificationWindow
 		} else {
 			thread = new SimpleNotifyingWorkerThread(r);
 		}
-		WorkNotificationPanel panel = new WorkNotificationPanel(this, thread.getName(), thread);
+		thread.addWorkerThreadListener(listener);
+		WorkNotificationPanel panel = new WorkNotificationPanel(thread.getName(), thread);
 		notificationPanels.add(panel);
 		displayPanel.add(panel.getComponent());
+		if (panel.getComponent().getPreferredSize().width > displayScrollPane.getBounds().width) {
+			Rectangle scrollBounds = displayScrollPane.getBounds();
+			Rectangle dialogBounds = dialog.getBounds();
+			int diff = scrollBounds.width;
+			scrollBounds.width = panel.getComponent().getPreferredSize().width + 25;
+			diff -= scrollBounds.width;
+			dialogBounds.width -= diff;
+			dialogBounds.x += diff / 2;
+			displayScrollPane.setBounds(scrollBounds);
+			dialog.setBounds(dialogBounds);
+		}
 		displayScrollPane.revalidate();
 		synchronized(threads) {
 			threads.add(thread);
@@ -291,7 +326,7 @@ public class WorkNotificationWindow
 		}
 	}
 	
-	void removeThread(NotifyingWorkerThread thread) {
+	private void removeThread(NotifyingWorkerThread thread) {
 		int count = 0;
 		synchronized(threads) {
 			threads.remove(thread);
@@ -299,7 +334,11 @@ public class WorkNotificationWindow
 		}
 		if (count == 0) {
 			for (WorkNotificationPanel panel : notificationPanels) {
-				if (panel.isThreadStoppedWithError()) {
+				// Changed to WorkNotificationPanel#hasError() from
+				// WorkNotificationPanel#isThreadStoppedWithError()
+				// because thread may not have died by the time we
+				// remove it.  -matt 20090213
+				if (panel.hasError()) {
 					closeButton.setVisible(true);
 					return;
 				}

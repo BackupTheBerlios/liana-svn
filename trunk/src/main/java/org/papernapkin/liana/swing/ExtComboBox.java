@@ -208,4 +208,15 @@ public class ExtComboBox extends JComboBox
 	{
 		this.fullSelectOnFocus = fullSelect;
 	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.JComboBox#selectedItemChanged()
+	 */
+	@Override
+	protected void selectedItemChanged() {
+		super.selectedItemChanged();
+		getEditor().setItem(getSelectedItem());
+	}
+
+	
 }  	

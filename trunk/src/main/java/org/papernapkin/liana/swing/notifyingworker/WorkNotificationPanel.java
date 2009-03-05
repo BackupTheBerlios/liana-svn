@@ -30,7 +30,9 @@ public class WorkNotificationPanel
 	private NotifyingWorkerThread thread;
 	private boolean running = false;
 	private String text;
-	private WorkNotificationWindow wnwindow;
+	
+	private Color errorColor = Color.RED;
+	private Color successColor = Color.GREEN;
 
 	/** Creates a new instance with all default values.  No label and no thread to monitor. */
 	public WorkNotificationPanel() {
@@ -44,10 +46,6 @@ public class WorkNotificationPanel
 	
 	/** Creates a new instance with the given label that will monitor the given thread. */
 	public WorkNotificationPanel(String labeltext, NotifyingWorkerThread thread) {
-	}
-	
-	WorkNotificationPanel(WorkNotificationWindow wnwindow, String labeltext, NotifyingWorkerThread thread) {
-		this.wnwindow = wnwindow;
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		label = new JLabel(labeltext == null ? "" : labeltext);
@@ -78,12 +76,14 @@ public class WorkNotificationPanel
 	public void setNotifyingWorkerThread(NotifyingWorkerThread thread) {
 		this.thread = thread;
 		progressbar.setString("");
-		if (thread.isAlive()) {
-			startOccurred();
-		} else {
-			stopOccurred();
+		if (thread != null) {
+			if (thread.isAlive()) {
+				startOccurred();
+			} else {
+				stopOccurred();
+			}
+			WorkerThreadListenerEventHandler.register(this, thread);
 		}
-		WorkerThreadListenerEventHandler.register(this, thread);
 	}
 	
 	public String getLabelText() {
@@ -97,7 +97,7 @@ public class WorkNotificationPanel
 		this.text = text;
 		progressbar.setString(text);
 		if (error) {
-			progressbar.setForeground(Color.RED);
+			progressbar.setForeground(errorColor);
 		} else {
 			progressbar.setForeground(defaultforeground);
 		}
@@ -114,6 +114,15 @@ public class WorkNotificationPanel
 	
 	public boolean isThreadStoppedWithError() {
 		return thread != null && !thread.isAlive() && !thread.isSuccessful(); 
+	}
+	
+	/**
+	 * Returns true if the {@link NotifyingWorkerThread} monitored by this panel
+	 * exits unsuccessfully.
+	 * @return
+	 */
+	public boolean hasError() {
+		return !thread.isSuccessful();
 	}
 	
 	@WorkerThreadErrorFor
@@ -156,6 +165,7 @@ public class WorkNotificationPanel
 		progressbar.setString(null);
 		progressbar.setIndeterminate(true);
 		progressbar.setString("Working...");
+		progressbar.setForeground(defaultforeground);
 	}
 	
 	@WorkerThreadStopFor
@@ -163,14 +173,12 @@ public class WorkNotificationPanel
 		running = false;
 		progressbar.setMaximum(Integer.MAX_VALUE);
 		progressbar.setValue(Integer.MAX_VALUE);
-		if (progressbar.getForeground().equals(Color.RED)) {
+		if (progressbar.getForeground().equals(errorColor)) {
 			progressbar.setString("Aborted: " + progressbar.getString());
 		} else {
 			progressbar.setString("Done");
+			progressbar.setForeground(successColor);
 		}
 		progressbar.setIndeterminate(false);
-		if (wnwindow != null) {
-			wnwindow.removeThread(thread);
-		}
 	}
 }

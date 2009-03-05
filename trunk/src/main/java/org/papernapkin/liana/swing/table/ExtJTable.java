@@ -1,17 +1,18 @@
 package org.papernapkin.liana.swing.table;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-// import javax.swing.table.TableCellEditor;
+import javax.swing.UIManager;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.JTextComponent;
@@ -109,7 +110,7 @@ public class ExtJTable extends JTable
 		if (adaptForExcel) {
 			excelAdapter = new JTableExcelAdapter(this);
 		}
-		cellEditPatch = new JTableCellEditPatch(this);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 	}
 	
 	/**
@@ -122,7 +123,7 @@ public class ExtJTable extends JTable
 		if (adaptForExcel) {
 			excelAdapter = new JTableExcelAdapter(this);
 		}
-		cellEditPatch = new JTableCellEditPatch(this);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 	}
 	
 	/**
@@ -135,7 +136,7 @@ public class ExtJTable extends JTable
 		if (adaptForExcel) {
 			excelAdapter = new JTableExcelAdapter(this);
 		}
-		cellEditPatch = new JTableCellEditPatch(this);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 	}
 	
 	/**
@@ -149,7 +150,7 @@ public class ExtJTable extends JTable
 		if (adaptForExcel) {
 			excelAdapter = new JTableExcelAdapter(this);
 		}
-		cellEditPatch = new JTableCellEditPatch(this);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 	}
 	
 	/**
@@ -161,7 +162,7 @@ public class ExtJTable extends JTable
 		if (adaptForExcel) {
 			excelAdapter = new JTableExcelAdapter(this);
 		}
-		cellEditPatch = new JTableCellEditPatch(this);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 	}
 	
 	/**
@@ -174,7 +175,7 @@ public class ExtJTable extends JTable
 		if (adaptForExcel) {
 			excelAdapter = new JTableExcelAdapter(this);
 		}
-		cellEditPatch = new JTableCellEditPatch(this);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 	}
 	
 	/**
@@ -188,47 +189,132 @@ public class ExtJTable extends JTable
 		if (adaptForExcel) {
 			excelAdapter = new JTableExcelAdapter(this);
 		}
-		cellEditPatch = new JTableCellEditPatch(this);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 	}
 	
 	
 	// MEMBERS
 	
-	protected JTableCellEditPatch cellEditPatch = null;
+//	protected JTableCellEditPatch cellEditPatch = null;
 	protected JTableExcelAdapter excelAdapter = null;
+	
+	protected boolean alternateRowColors = false;
+	private Color rowColor;
+	private Color altRowColor;
+	
+	/**
+	 * @return the alternateRowColors
+	 */
+	public boolean isAlternateRowColors() {
+		return alternateRowColors;
+	}
+
+	/**
+	 * @param alternateRowColors the alternateRowColors to set
+	 */
+	public void setAlternateRowColors(boolean alternateRowColors) {
+		this.alternateRowColors = alternateRowColors;
+	}
+
+	/**
+	 * @return the rowColor
+	 */
+	public Color getRowColor() {
+		if (rowColor == null) {
+			return UIManager.getColor("Table.background");
+		} else {
+			return rowColor;
+		}
+	}
+
+	/**
+	 * @param rowColor the rowColor to set
+	 */
+	public void setRowColor(Color rowColor) {
+		this.rowColor = rowColor;
+	}
+
+	/**
+	 * @return the altRowColor
+	 */
+	public Color getAltRowColor() {
+		if (altRowColor == null) {
+			altRowColor = new Color(204, 255, 204);
+		}
+		return altRowColor;
+	}
+
+	/**
+	 * @param altRowColor the altRowColor to set
+	 */
+	public void setAltRowColor(Color altRowColor) {
+		alternateRowColors = altRowColor != null;
+		this.altRowColor = altRowColor;
+	}
 
 	// METHODS
 
+	@Override
+	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+		Component c = super.prepareRenderer(renderer, row, column);
+		if (alternateRowColors && ! isCellSelected(row, column)) {
+			if (row % 2 == 0) {
+				c.setBackground(getAltRowColor());
+			} else {
+				c.setBackground(getRowColor());
+			}
+		}
+		return c;
+	}
+	
 	//  Select the text when the cell starts editing
 	//  a) text will be replaced when you start typing in a cell
 	//  b) text will be selected when you use F2 to start editing
 	//  c) text will be selected when double clicking to start editing
-	public boolean editCellAt(int row, int column, EventObject e)
-	{
-		boolean result = super.editCellAt(row, column, e);
-		final Component editor = getEditorComponent();
-
-		if (editor != null && editor instanceof JTextComponent)
-		{
-			if (e == null)
-			{
-				((JTextComponent)editor).selectAll();
-			}
-			else
-			{
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					public void run()
-					{
-						((JTextComponent)editor).selectAll();
-					}
-				});
-			}
-		}
-
-		return result;
-	}
+	// removed this override and moved this behaviour into <code>prepareEditor</code>
+	// to avoid thread issues it SwingUtilities#invokeLater(Runnable) and the rest
+	// of the GUI updated involved in switching to the TableCellEditor
+	// mattorantimatt 2009.01.16
+//	public boolean editCellAt(int row, int column, EventObject e)
+//	{
+//		boolean result = super.editCellAt(row, column, e);
+//		final Component editor = getEditorComponent();
+//
+//		if (editor != null && editor instanceof JTextComponent)
+//		{
+//			if (e == null)
+//			{
+//				((JTextComponent)editor).selectAll();
+//			}
+//			else
+//			{
+//				SwingUtilities.invokeLater(new Runnable()
+//				{
+//					public void run()
+//					{
+//						((JTextComponent)editor).selectAll();
+//					}
+//				});
+//			}
+//		}
+//
+//		return result;
+//	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.JTable#prepareEditor(javax.swing.table.TableCellEditor, int, int)
+	 */
+	@Override
+	public Component prepareEditor(TableCellEditor editor, int row, int column) {
+		Component c = super.prepareEditor(editor, row, column);
+		
+		if (c instanceof JTextComponent) {
+			((JTextComponent)c).selectAll();
+		}
+		return c;
+	}
+
+
 	private ToolTipTableModel tooltipModel;
 	public ToolTipTableModel getToolTipTableModel()
 	{

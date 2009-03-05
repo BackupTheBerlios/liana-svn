@@ -1,9 +1,13 @@
 package org.papernapkin.liana.swing.table;
 
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.regex.Pattern;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -12,11 +16,6 @@ import javax.swing.KeyStroke;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.datatransfer.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * ExcelAdapter enables Copy-Paste Clipboard functionality on JTables. The
@@ -83,7 +82,6 @@ public class JTableExcelAdapter implements ActionListener
 	 * I made changes to use the String.split(String, int) method because the
 	 * StringTokenizer version ignored data copied from empty cells.
 	 */
-	@SuppressWarnings("unchecked")
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().compareTo("Copy")==0)
@@ -144,19 +142,14 @@ public class JTableExcelAdapter implements ActionListener
 				
 				String[] s;
 				String[] rows = trstring.split("\n", -1);
-				List<String>[] columns = new List[rows.length];
+				Pattern p = Pattern.compile("\t");
 				for (int i = 0; i < rows.length; i++) {
 					if (rows[i].length() == 0) {
 						continue;
 					}
-					s = rows[i].split("\t", -1);
-					columns[i] = new ArrayList<String>();
-					Collections.addAll(columns[i], s);
-				}
-				
-				for (int i = 0; i < rows.length; i++) {
-					for (int j = 0; j < columns[i].size() ; j++) {
-						jTable1.setValueAt(columns[i].get(j), startRow + i, startCol + j);
+					s = p.split(rows[i]);
+					for (int j = 0; j < s.length ; j++) {
+						jTable1.setValueAt(s[j], startRow + i, startCol + j);
 					}
 				}
 			} catch(Exception ex){

@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JWindow;
 
 /**
@@ -62,5 +63,20 @@ public class SwingToolbox
 		}
 		
 		return (JWindow)comp;
+	}
+	
+	/**
+	 * Finds the JInternalFrame in the component's parent heirarchy, or null if one
+	 * does not exist.
+	 * @param comp
+	 * @return
+	 */
+	public static JInternalFrame findParentJInternalFrame(Component comp) {
+		while (comp != null && ! (comp instanceof JInternalFrame))
+		{
+			comp = comp.getParent();
+		}
+		
+		return (JInternalFrame)comp;
 	}
 }
