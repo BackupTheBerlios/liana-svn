@@ -4,7 +4,7 @@
   <groupId>org.papernapkin</groupId>
   <artifactId>liana</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.0</version>
+  <version>1.3.1</version>
   <name>Liana swing utility library</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -29,7 +29,17 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
       <version>3.0.2-FINAL</version>
+      <!--
+        - If the user of the liana library wants to use this functionality,
+        - they need to provide the dependency.
+        -->
+      <scope>provided</scope>
     </dependency>
+      <!--
+        - If the user of the liana library needs to provide the
+        - implementation of the lsf4j api that they ant to use.  The nop
+        - (no opp) implementation is available if no logging is wanted.
+        -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
