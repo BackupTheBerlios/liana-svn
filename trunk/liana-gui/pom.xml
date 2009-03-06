@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.papernapkin</groupId>
+    <artifactId>liana-parent</artifactId>
+    <version>1.4.0</version>
+  </parent>
+
+  <groupId>org.papernapkin</groupId>
+  <artifactId>liana-gui</artifactId>
+  <packaging>jar</packaging>
+  <name>Liana swing library</name>
+  <description>
+    The liana sub-project which holds classes related to AWT and Swing
+    development.
+  </description>
+  <version>${liana-version}</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.papernapkin</groupId>
+      <artifactId>liana-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <!--
+        - If the user of the liana library wants to use this functionality,
+        - they need to provide the dependency.
+        -->
+      <scope>provided</scope>
+    </dependency>
+    <!--
+      - If the user of the liana library needs to provide the
+      - implementation of the lsf4j api that they ant to use.  The nop
+      - (no opp) implementation is available if no logging is wanted.
+      -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

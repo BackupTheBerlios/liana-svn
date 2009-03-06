@@ -1,12 +1,60 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.papernapkin</groupId>
-  <artifactId>liana</artifactId>
-  <packaging>jar</packaging>
-  <version>1.3.1</version>
-  <name>Liana swing utility library</name>
-  <url>http://maven.apache.org</url>
+  <artifactId>liana-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.4.0</version>
+  <name>Liana swing utility library parent project</name>
+  <description>
+    The parent project for a library of utility classes for swing and general
+    java development.
+  </description>
+  <url>http://liana.berlios.de/</url>
+
+  <organization>
+    <name>PCSW.us</name>
+    <url>http://pcsw.us</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>pchapman</id>
+      <name>Philip Chapman</name>
+      <email>pchapman at pcsw.us</email>
+      <organization>PCSW.us</organization>
+      <organizationUrl>http://pcsw.us</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>-6</timezone>
+    </developer>
+    <developer>
+      <id>mattorantimatt</id>
+      <name>Matthew Hanlon</name>
+      <email>mattorantimatt at users.berlios.de</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>-6</timezone>
+    </developer>
+    <developer>
+      <id>johane</id>
+      <name>Johan Edstrom</name>
+      <email>johane at users.berlios.de</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>-7</timezone>
+    </developer>
+  </developers>
+
+  <properties>
+    <slf4j-version>1.4.2</slf4j-version>
+    <liana-version>1.4.0</liana-version>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -19,43 +67,44 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>4.4</version>
-	</dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.0.2-FINAL</version>
-      <!--
-        - If the user of the liana library wants to use this functionality,
-        - they need to provide the dependency.
-        -->
-      <scope>provided</scope>
-    </dependency>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.papernapkin</groupId>
+        <artifactId>liana-util</artifactId>
+        <version>${liana-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>3.0.2-FINAL</version>
+      </dependency>
       <!--
         - If the user of the liana library needs to provide the
         - implementation of the lsf4j api that they ant to use.  The nop
         - (no opp) implementation is available if no logging is wanted.
         -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.4.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.4.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.13</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>liana-gui</module>
+    <module>liana-util</module>
+  </modules>
 </project>
