@@ -251,6 +251,17 @@ public class JTableSorterModel extends AbstractTableModel
     public int modelIndex(int viewIndex) {
         return getViewToModel()[viewIndex].modelIndex;
     }
+    
+    /**
+     * Returns the row in the view model (the sorted model) for the given
+     * index in the data model.
+     * @param modelIndex The row of the data to be mapped to the table view.
+     * @return The row index in the view that displays the row in the data model
+     * @author mhanlon Added 2009.03.31
+     */
+    public int viewIndex(int modelIndex) {
+    	return getModelToView()[modelIndex];
+    }
 
     private int[] getModelToView() {
         if (modelToView == null) {

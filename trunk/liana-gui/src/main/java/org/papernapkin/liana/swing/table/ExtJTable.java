@@ -13,6 +13,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.JTextComponent;
@@ -367,5 +368,63 @@ public class ExtJTable extends JTable
     
         // Scroll the area into view
         viewport.scrollRectToVisible(rect);
+	}
+	
+	/**
+	 * Sets the preferred width of the columns of the table according to content
+	 * @param margin The extra column margin to include
+	 */
+	public void packColumns(int margin) {
+		for (int col = 0; col < getColumnCount(); col++) {
+			packColumn(col, margin);
+		}
+	}
+	
+	/**
+	 * Sets the preferred width of a table column
+	 * @param columnIndex The column index to pack
+	 * @param margin The extra column margin to include
+	 */
+	public void packColumn(int columnIndex, int margin) {
+		packColumn(columnIndex, margin, 0);
+	}
+	
+	/**
+	 * Sets the preferred width of a table column
+	 * @param columnIndex The column index to pack
+	 * @param margin The extra column margin to include
+	 * @param defaultWidth The default width
+	 */
+	public void packColumn(int columnIndex, int margin, int defaultWidth) {
+		TableColumn col = getColumnModel().getColumn(columnIndex);
+		
+		int width = defaultWidth;
+		
+		TableCellRenderer renderer = col.getHeaderRenderer();
+		if (renderer == null && getTableHeader() != null) {
+            renderer = getTableHeader().getDefaultRenderer();
+            Component comp = renderer.getTableCellRendererComponent(this, col.getHeaderValue(), false, false, 0, 0);
+	        width = Math.max(width, comp.getPreferredSize().width);
+        }
+		if (renderer != null) {
+	        Component comp = renderer.getTableCellRendererComponent(this, col.getHeaderValue(), false, false, 0, 0);
+	        width = Math.max(width, comp.getPreferredSize().width);
+        }
+    
+        // Get visible rows only...makes sure we don't spend too much time scanning the table data
+        int rows = getVisibleRect().height/getRowHeight();
+        
+        // Get maximum width of column data
+        for (int r = 0; r < rows; r++) {
+            renderer = getCellRenderer(r, columnIndex);
+            Component comp = renderer.getTableCellRendererComponent(this, getValueAt(r, columnIndex), false, false, r, columnIndex);
+            width = Math.max(width, comp.getPreferredSize().width);
+        }
+    
+        // Add margin
+        width += 2*margin;
+    
+        // Set the width
+        col.setPreferredWidth(width);
 	}
 }
