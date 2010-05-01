@@ -5,6 +5,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 
+import org.papernapkin.liana.bean.IValidator;
+
 /**
  * A label which can be used to show the status of validated data.
  * 
@@ -183,5 +185,20 @@ public class ValidationLabel extends JLabel
 		this.status = status;
 		setToolTipText(validationErrorText);
 		evaluateStatus();
-	}    
+	}
+	
+	/**
+	 * Sets the status of validation based on whether an error message was
+	 * found.  In order for this to work, the validation label's name must be
+	 * set to that of the bean member being validated.  Also, IValidator's
+	 * validate method should have already been called.
+	 * @param validator The validator to check for errors.
+	 */
+	public void setValidationStatus(IValidator<?> validator) {
+		String s = validator.getErrorMessage(getName());
+		if (s == null)
+			setValidationStatus(ValidationStatus.VALID, null);
+		else
+			setValidationStatus(ValidationStatus.INVALID, s);
+	}
 }

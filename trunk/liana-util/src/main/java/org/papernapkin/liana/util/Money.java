@@ -6,196 +6,125 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.*; // Java Text classes
+import java.util.Locale;
 
 import java.math.*; // Java Math classes
 
 import java.io.*; // Java I/O
 
 /**
+ * <b>Class Money</b>
  *
- *       <b>Class Money</b>
+ * <p>
+ * The Money class represents a United States monetary value, expressed in
+ * dollars and cents. Internally, the value is represented using Java's
+ * BigDecimal class.
+ * </p>
  *
- *       <p>
- *       The Money class represents a United States
- *       monetary value, expressed in dollars and cents. Internally,
- *       the
- *       value is represented using Java's BigDecimal class.
- *       </p>
+ * <p>
+ * Methods are provided to perform all the usual arithmetic manipulations
+ * required when dealing with monetary data, including add, subtract, multiply,
+ * and divide.
+ * </p>
  *
- *       <p>
- *       Methods are provided to perform all the usual arithmetic
- *       manipulations required when dealing with monetary data,
- *       including add, subtract, multiply, and divide.
- *       </p>
+ * <p><b>Rounding</b></p>
+ * <p>
+ * Rounding does not occur during intermediate computations; maximum precision
+ * (and accuracy) is thus preserved throughout all computations.  Round-off to
+ * an integral cent occurs only when the monetary value is externalized (when
+ * formatted for display as a String or converted to a long integer). One of
+ * several different rounding modes can be specified. The default rounding mode
+ * is to discard any fractional cent and truncate the monetary value to 2
+ * decimal places.
+ * </p>
  *
- *       <p>
- *       <b>Rounding</b>
- *       </p>
- *       <p>
- *       Rounding does not occur during intermediate computations;
- *       maximum precision
- *       (and accuracy) is thus preserved throughout all computations.
- *       Round-off to an integral cent occurs only when the
- *       monetary value is externalized (when formatted for display as
- *       a String or
- *       converted to a long integer). One of several different
- *       rounding modes
- *       can be specified. The default rounding mode is to discard any
- *       fractional
- *       cent and truncate the monetary value to 2 decimal places.
- *       </p>
+ * <p><b>Currency Format</b></p>
+ * <p>
+ * A Currency Format (an instance of DecimalFormat) is used to control
+ * formatting of monetary values for display as well as the parsing of strings
+ * which represent monetary values.  By default, the Currency Format for the
+ * current locale is used. For the United States, the default Currency Symbol
+ * is the Dollar Sign ("$").  Negative amounts are enclosed in parentheses. A
+ * Decimal Point (".") separates the dollars and cents, and a comma (",")
+ * separates each group of 3 consecutive digits in the dollar amount.
+ * </p>
+ * <p>Examples: $1,234.56   ($1,234.56)</p>
  *
- *       <p>
- *       <b>Currency Format</b>
- *       </p>
- *       <p>
- *       A Currency Format (an instance of DecimalFormat) is used to
- *       control formatting of
- *       monetary values for display as well as the parsing of strings
- *       which represent
- *       monetary values.
- *       By default, the Currency Format for the current locale is
- *       used. For the
- *       United States, the default Currency Symbol is the Dollar Sign
- *       ("$").
- *       Negative amounts are enclosed in parentheses. A Decimal Point
- *       (".")
- *       separates the dollars and cents, and a comma (",") separates
- *       each group
- *       of 3 consecutive digits in the dollar amount.
- *       </p>
- *       <p>
- *       Examples: $1,234.56   ($1,234.56)
- *       </p>
+ * <p><b>Immutability</b></p>
+ * <p>
+ * Money objects, like String objects, are <b>immutable</b>. An operation on a
+ * Money object (such as add, subtract, etc.) does not alter the object in any
+ * way. Rather, a new Money object is returned whose state reflects the result
+ * of the operation. Thus, a statement like
+ * </p>
+ * <p><tt>money1.add(money2);</tt></p>
+ * <p>
+ * has no effect; it does not modify money1 in any way, and the result is
+ * effectively discarded. If the intent is to modify money1, then you should
+ * code
+ * </p>
+ * <p>money1 = money1.add(money2);</p>
+ * <p>which effectively replaces money1 with the result.</p>
  *
- *       <p>
- *       <b>Immutability</b>
- *       </p>
- *       <p>
- *       Money objects, like String objects, are <b>immutable</b>.
- *       An operation on a Money object (such as add, subtract, etc.)
- *       does not alter the object in any way.
- *       Rather, a new Money object is returned whose state reflects
- *       the result of the operation.
- *       Thus, a statement like
- *       </p>
- *       <p>
- *       <tt>money1.add(money2);</tt>
- *       </p>
- *       <p>
- *       has no effect; it does not modify money1 in any way, and the
- *       result is effectively discarded.
- *       If the intent is to modify money1, then you should code
- *       </p>
- *       <p>
- *       money1 = money1.add(money2);
- *       </p>
- *       <p>
- *       which effectively replaces money1 with the result.
- *       </p>
- *
- *       @see BigDecimal
- *
- *       @see DecimalFormat
- *
+ * @see BigDecimal
+ * @see DecimalFormat
  */
-
 public class Money implements Cloneable, Serializable
 {
-
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 *       The monetary value.
-	 */
-
+	/** The monetary value. */
 	protected BigDecimal value = null; // The monetary value
 
 	/**
-	 *       The Rounding Mode. Specifies if and how the monetary value is
-	 *       to be rounded off to an integral cent.
+	 * The Rounding Mode. Specifies if and how the monetary value is to be
+	 * rounded off to an integral cent.
 	 */
-
 	protected int roundingMode = BigDecimal.ROUND_DOWN; // Rounding Mode
 
 	/**
-	 *       The Currency Format, used for formatting and parsing a
-	 *       monetary value. Refer to the Java API
-	 *       documentation for the DecimalFormat class for information on
-	 *       formats.
+	 * The Currency Format, used for formatting and parsing a monetary value.
+	 * Refer to the Java API documentation for the DecimalFormat class for
+	 * information on formats.
 	 */
+	protected DecimalFormat currencyFormat = (DecimalFormat)NumberFormat.getCurrencyInstance();
 
-	protected DecimalFormat currencyFormat =
-
-	(DecimalFormat) NumberFormat.getCurrencyInstance(); // Currency format
-
-	/**
-	 *       The special monetary value of zero ($0.00).
-	 */
-
-	protected static final BigDecimal ZERO =
-
-	new BigDecimal("0.00"); // The value $0.00
+	/** The special monetary value of zero ($0.00). */
+	protected static final BigDecimal ZERO = new BigDecimal("0.00");
 
 	public static final Money CURRENCY_ZERO = new Money(ZERO);
 
 	/**
+	 * <b>Class InvalidScaleFactorException</b>
 	 *
-	 *       <b>Class InvalidScaleFactorException</b>
-	 *
-	 *       <p>
-	 *       The InvalidScaleFactorException is thrown if an invalid scale
-	 *       factor is specified (valid scale factors are 0, 1, and 2).
-	 *       This is a non-checked exception and will be detected at
-	 *       runtime only.
-	 *       </p>
-	 *
+	 * <p>
+	 * The InvalidScaleFactorException is thrown if an invalid scale factor is
+	 * specified (valid scale factors are 0, 1, and 2). This is a non-checked
+	 * exception and will be detected at runtime only.
+	 * </p>
 	 */
-
-	public static class InvalidScaleFactorException
-
-	extends RuntimeException // Non-checked exception
-
+	public static class InvalidScaleFactorException extends RuntimeException
 	{
-
 		private static final long serialVersionUID = 1L;
 
-		/**
-		 *
-		 *       Default constructor for a InvalidScaleFactorException object.
-		 *
-		 */
-
+		/** Default constructor for a InvalidScaleFactorException object. */
 		public InvalidScaleFactorException()
-
 		{
-
 			super(); // Invoke super class constructor.
-
 		}
 
 		/**
+		 * Constructor for a InvalidScaleFactorException object.
 		 *
-		 *       Constructor for a InvalidScaleFactorException object.
-		 *
-		 *       <p>
-		 *       @param       info         Descriptive information
-		 *       </p>
-		 *
+		 * @param info Descriptive information
 		 */
-
 		public InvalidScaleFactorException(String info) // Descriptive info
-
 		{
-
 			super(info); // Invoke super class constructor.
-
 		}
-
-	} // Class InvalidScaleFactorException
+	}
 
 	/**
-	 *
 	 *       <b>Class InvalidRoundingModeException</b>
 	 *
 	 *       <p>
@@ -214,68 +143,74 @@ public class Money implements Cloneable, Serializable
 	 *       @see    BigDecimal#ROUND_HALF_UP
 	 *       @see    BigDecimal#ROUND_HALF_DOWN
 	 *       @see    BigDecimal#ROUND_HALF_EVEN
-	 *
 	 */
-
-	public static class InvalidRoundingModeException
-
-	extends RuntimeException // Non-checked exception
-
+	public static class InvalidRoundingModeException extends RuntimeException
 	{
-
 		private static final long serialVersionUID = 1L;
 
-		/**
-		 *
-		 *       Default constructor for a InvalidRoundingModeException object.
-		 *
-		 */
-
+		/** Default constructor for a InvalidRoundingModeException object. */
 		public InvalidRoundingModeException()
-
 		{
-
 			super(); // Invoke super class constructor.
-
-		} // Default Constructor InvalidRoundingModeException()
-
-		/**
-		 *
-		 *       Constructor for a InvalidRoundingModeException object.
-		 *
-		 *       <p>
-		 *       @param       info         Descriptive information
-		 *       </p>
-		 *
-		 */
-
-		public InvalidRoundingModeException(String info) // Descriptive info
-
-		{
-
-			super(info); // Invoke super class constructor.
-
 		}
 
-	} // Class InvalidRoundingModeException
+		/**
+		 * Constructor for a InvalidRoundingModeException object.
+		 *
+		 * @param info Descriptive information
+		 */
+		public InvalidRoundingModeException(String info)
+		{
+			super(info);
+		}
+	}
 
 	// CONSTRUCTORS
 	
 	/**
-	 *
-	 *       Default Constructor for a Money object; creates an object
-	 *       whose value is $0.00.
-	 *
+	 * Default Constructor for a Money object; creates an object whose value is
+	 * $0.00.
 	 */
-
 	public Money()
+	{
+		this(Locale.getDefault());
+	}
+	
+	/**
+	 * Default Constructor for a Money object; creates an object whose value is
+	 * 0.00 for the given locale.
+	 */
+	public Money(Locale locale)
 
 	{
+		value = ZERO; // Initialize the monetary value to $0.00.
+		currencyFormat = (DecimalFormat)NumberFormat.getCurrencyInstance(locale);
+	}
 
-		value = ZERO; // Initialize the monetary value
-		// to $0.00.
-
-	} // Default Constructor Money()
+	/**
+	 *       Constructs a Money object from a double-precision,
+	 *       floating-point value.
+	 *       The Currency Format is set to the default format for the
+	 *       current locale.
+	 *
+	 *       <p>
+	 *       The integral part of the value represents whole dollars, and
+	 *       the fractional
+	 *       part of the value represents fractional dollars (cents). As
+	 *       an example,
+	 *       the value 19.95 would represent $19.95.
+	 *       </p>
+	 *
+	 *       <p>
+	 *       @param       <b>amount</b> The monetary amount, in dollars
+	 *       and cents
+	 *       </p>
+	 *
+	 */
+	public Money(double amount)
+	{
+		this(amount, Locale.getDefault());
+	}
 
 	/**
 	 *
@@ -298,11 +233,8 @@ public class Money implements Cloneable, Serializable
 	 *       </p>
 	 *
 	 */
-
-	public Money(double amount) // Monetary Value, dollars and cents
-
+	public Money(double amount, Locale locale)
 	{
-
 		// In general, a double floating point value cannot represent a
 		// decimal value exactly, and
 		// therefore is only a very close approximation of the actual decimal
@@ -325,10 +257,10 @@ public class Money implements Cloneable, Serializable
 
 		// Convert the parsed value to a simple string (decimal point only)
 		// and use it to set the monetary value.
-
+		
 		value = new BigDecimal(Double.toString(amount));
-
-	} // Constructor Money(double amount)
+		currencyFormat = (DecimalFormat)NumberFormat.getCurrencyInstance(locale);
+	}
 
 	/**
 	 *
@@ -345,14 +277,31 @@ public class Money implements Cloneable, Serializable
 	 *       </p>
 	 *
 	 */
-
 	public Money(long amount) // Monetary amount, whole dollars (no cents)
-
 	{
+		this(amount, Locale.getDefault());
+	}
 
+	/**
+	 *
+	 *       Constructs a Money object from a long integer value. The
+	 *       specified
+	 *       value represents whole dollars only (that is, cents are
+	 *       implicity assumed
+	 *       to be 00). For example, the integer 25 would represent a
+	 *       monetary value of $25.00.
+	 *
+	 *       <p>
+	 *       @param       <b>amount</b> The monetary amount, in whole
+	 *                                  dollars (no cents)
+	 *       </p>
+	 *
+	 */
+	public Money(long amount, Locale locale) // Monetary amount, whole dollars (no cents)
+	{
 		value = new BigDecimal(Long.toString(amount)); // Set monetary value.
-
-	} // Constructor Money(long amount)
+		currencyFormat = (DecimalFormat)NumberFormat.getCurrencyInstance(locale);
+	}
 
 	/**
 	 *
@@ -382,14 +331,43 @@ public class Money implements Cloneable, Serializable
 	 *       </p>
 	 *
 	 */
-
-	public Money(long amount, // Montetary amount
-			int scale) // Scale Factor (0, 1, 2)
-
-			throws InvalidScaleFactorException
-
+	public Money(long amount, int scale)
+		throws InvalidScaleFactorException
 	{
-
+		this(amount, scale, Locale.getDefault());
+	}
+	
+	/**
+	 *
+	 *       Constructs a Money object from a long integer value with a
+	 *       specified scale factor.
+	 *       The scale factor (0, 1, or 2) specifies the number of digits
+	 *       to the right of an
+	 *       implied decimal point.
+	 *
+	 *       <p>
+	 *       For example, the value 1995 would be interpreted as a
+	 *       monetary value of
+	 *       $1995.00, $199.50, and $19.95 for scale factors of 0, 1, or
+	 *       2, respectively.
+	 *       </p>
+	 *
+	 *       <p>
+	 *       @param       <b>amount</b> The monetary amount, in dollars
+	 *                                  and cents
+	 *
+	 *       @param       <b>scale</b> Scale factor (must be 0, 1, or 2)
+	 *       </p>
+	 *
+	 *       <p>
+	 *       @throws      InvalidScaleFactorException The scale factor
+	 *                    specified is not valid (must be 0, 1, or 2)
+	 *       </p>
+	 *
+	 */
+	public Money(long amount, int scale, Locale locale)
+		throws InvalidScaleFactorException
+	{
 		if ( // If the Scale Factor is not
 		(scale < 0) // 0, 1, or
 				|| (scale > 2) // 2,
@@ -401,8 +379,8 @@ public class Money implements Cloneable, Serializable
 		// Set the monetary value and scale as specified.
 
 		value = (new BigDecimal(Long.toString(amount))).movePointLeft(scale);
-
-	} // Constructor Money(long amount, int scale)
+		currencyFormat = (DecimalFormat)NumberFormat.getCurrencyInstance(locale);
+	}
 
 	/**
 	 *
@@ -431,13 +409,45 @@ public class Money implements Cloneable, Serializable
 	 *       @see         #setCurrencyFormat
 	 *
 	 */
-
 	public Money(String string) // String representing a Monetary Value
 
 			throws ParseException // If string is inconsistent with
 	// Currency Format
 
 	{
+		this(string, Locale.getDefault());
+	}
+	
+	/**
+	 *
+	 *       Constructs a Money object from a string representation of a
+	 *       monetary value. The
+	 *       format of the string must be consistent with the Currency
+	 *       Format; otherwise,
+	 *       a ParseException is recognized.
+	 *
+	 *       Refer to the Java API documentation for the DecimalFormat
+	 *       class for information on
+	 *       Decimal Formats in general, and Currency Formats in
+	 *       particular.
+	 *
+	 *       <p>
+	 *       @param       <b>string</b> A String representing a monetary
+	 *                                  value
+	 *       </p>
+	 *
+	 *       <p>
+	 *       @throws      ParseException The string is inconsistent with
+	 *                                   the Currency Format
+	 *       </p>
+	 *
+	 *       @see         DecimalFormat
+	 *       @see         #setCurrencyFormat
+	 *
+	 */
+	public Money(String string, Locale locale) throws ParseException
+	{
+		currencyFormat = (DecimalFormat)NumberFormat.getCurrencyInstance(locale);
 
 		// We make use of the format's parse() method, which parses the string
 		// according to the format and returns either a Double or a Long
@@ -485,7 +495,7 @@ public class Money implements Cloneable, Serializable
 				throw nfe;
 			}
 		}
-	} // Constructor Money(String)
+	}
 
 	/**
 	 *
@@ -498,15 +508,27 @@ public class Money implements Cloneable, Serializable
 	 *       </p>
 	 *
 	 */
-
 	public Money(BigDecimal amount) // A BigDecimal object representing a
-	// monetary amount
-
 	{
+		this(amount, Locale.getDefault());
+	}
 
+	/**
+	 *
+	 *       Constructs a Money object from a BigDecimal object.
+	 *
+	 *       <p>
+	 *       @param       <b>amount</b> A BigDecimal value representing a
+	 *                                  monetary amount, in dollars and
+	 *                                  cents
+	 *       </p>
+	 *
+	 */
+	public Money(BigDecimal amount, Locale locale)
+	{
 		value = new BigDecimal(amount.toString()); // Set the monetary value.
-
-	} // Constructor Money(BigDecimal amount)
+		currencyFormat = (DecimalFormat)NumberFormat.getCurrencyInstance(locale);
+	}
 
 	/**
 	 *
@@ -518,7 +540,6 @@ public class Money implements Cloneable, Serializable
 	 *       </p>
 	 *
 	 */
-
 	public Money(Money amount) // Money Object
 
 	{

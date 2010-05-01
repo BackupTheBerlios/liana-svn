@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.papernapkin</groupId>
+    <groupId>org.papernapkin.liana</groupId>
     <artifactId>liana-parent</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
   </parent>
 
-  <groupId>org.papernapkin</groupId>
+  <groupId>org.papernapkin.liana</groupId>
   <artifactId>liana-util</artifactId>
   <packaging>jar</packaging>
   <name>Liana utility library</name>
