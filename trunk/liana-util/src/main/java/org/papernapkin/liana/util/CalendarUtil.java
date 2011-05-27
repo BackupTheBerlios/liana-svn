@@ -355,7 +355,7 @@ public class CalendarUtil
     	cal.set(Calendar.DAY_OF_MONTH, cal.getMinimalDaysInFirstWeek());
      	cal.set(Calendar.YEAR, year);
      	cal = getWeekEnd(cal);
-     	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear - 1);
+     	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear);
     	return cal;
     }
     
@@ -398,7 +398,7 @@ public class CalendarUtil
     	cal.set(Calendar.DAY_OF_MONTH, cal.getMinimalDaysInFirstWeek());
      	cal.set(Calendar.YEAR, year);
      	cal = getWeekStart(cal);
-     	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear - 1);
+     	cal.add(Calendar.WEEK_OF_YEAR, weekOfYear);
      	return cal;
     }
     

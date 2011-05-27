@@ -51,9 +51,7 @@ public class ListComboBoxModel<T> extends AbstractListModel
 	public ListComboBoxModel(Collection<T> values)
 	{
 		this();
-		for (T value : values) {
-			this.data.add(value);
-		}
+		setObjects(values);
 	}
 
 	// MEMBERS
@@ -109,6 +107,18 @@ public class ListComboBoxModel<T> extends AbstractListModel
 		return new ArrayList<T>(this.data);
 	}
 	
+	/**
+	 * Changes the data in the list backing this model.  The Collection passed
+	 * in is not used.  As a result, changes to the collection passed in will
+	 * not be reflected in this model.
+	 * 
+	 * @param objects The items to insert.
+	 */
+	public void setObjects(Collection<T> objects) {
+		clear();
+		addObjects(objects);
+	}
+	
 	// METHODS
 	
 	/**
@@ -133,9 +143,7 @@ public class ListComboBoxModel<T> extends AbstractListModel
 	public void addObjects(Collection<T> items)
 	{
 		int index1 = data.size();
-		for (T value : items) {
-			this.data.add(value);
-		}
+		this.data.addAll(items);
 		int index2 = data.size() - 1;
 		if ((index2 - index1) > -1) {
 			fireIntervalAdded(this, index1, index2);

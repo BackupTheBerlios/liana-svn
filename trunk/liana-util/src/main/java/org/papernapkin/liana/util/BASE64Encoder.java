@@ -227,7 +227,9 @@ public class BASE64Encoder
 			  ioe.printStackTrace();
 		  }
 	  } else {
-		  System.out.println("Usage:\tjava com.alliancemanaged.simis.util.BASE64Encoder [infile] [outfile]");
+		  System.out.print("Usage:\t");
+          System.out.print(BASE64Encoder.class.getName());
+          System.out.println(" [infile] [outfile]");
 		  System.out.println("\tinfile - The given file will be read in, encoded, and the result printed to stdout.");
 		  System.out.println("\toutfile\t- The output file to which the encode content is written");
 		  System.out.println("\t         If infile and outfile is not provided, the class' tests will be run.");
