@@ -12,7 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="liana-util" />
+    <orderEntry type="library" name="Maven: org.papernapkin.liana:liana-util:1.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.4.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.poi:poi:3.0.2-FINAL" level="project" />
