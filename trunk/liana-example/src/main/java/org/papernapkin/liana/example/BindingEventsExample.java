@@ -11,15 +11,13 @@ import org.papernapkin.liana.swing.event.SwingResponderRegistrationTool;
 /**
  * Test for simple App.
  */
-public class AppTest
+public class BindingEventsExample
 {
     /**
      * Cannot be instantiated.  We just have a main method that does work
      * for us.
-     *
-     * @param testName name of the test case
      */
-    private AppTest()
+    private BindingEventsExample()
     {
         super();
     }
@@ -35,10 +33,14 @@ public class AppTest
         // Create the object that will respond to swing events.
         
         Responder responder = new Responder();
-        
+
+		
         // Manual Binding.  The action event of two buttons are bound to the
         // responder class by passing the class and method names to a static
-        // method.
+        // method.  This method of binding is clean, but requires that you
+		// provide the name of the method as a string.  This is bad for
+		// refactoring.  However, you can unregister the binding using the
+		// returned ActionListenerEventHandler.
         
         JButton button = new JButton("Stuff 1");
         ActionListenerEventHandler.bindActionEventHandler(
@@ -52,10 +54,13 @@ public class AppTest
         		button, responder, "doStuff2", true
         	);
         frame.getContentPane().add(button);
-        
+
+
         // Annotations Binding.  Once the components are set up, a static call
-        // to SwingResponderRegisterationTool is used to bind the controls by
-        // declared annotation.
+        // to SwingResponderRegisterationTool is used to bindActionEventHandler the controls by
+        // declared annotation.  This method is nicer as it is relatively safe
+		// for refactoring, but it relies on setting the name of each component.
+		// You cannot unregister the listeners.
         
         button = new JButton("Stuff 3");
         button.setName("stuff3");
@@ -67,10 +72,29 @@ public class AppTest
         frame.getContentPane().add(button);
         
         // The registration tool will look through all children of the given
-        // java.awt.Container for components to bind.  Therefore, you only have
+        // java.awt.Container for components to bindActionEventHandler.  Therefore, you only have
         // to call this once passing in top level parent.
         SwingResponderRegistrationTool.register(responder, frame);
-        
+
+		
+		// Proxy-enabled programmatic bindings.  A registration proxy is
+		// created and then re-used for each binding.  This method is
+		// cleanest, is refactor proof, and does not rely on magic strings of
+		// any sort; including component names.  However, it does require that
+		// an Interface be used to define the responder methods of the
+		// controller.  Not a bad idea, really.
+		// You cannot unregister the listeners.
+		IResponder registrationProxy = SwingResponderRegistrationTool.createRegistrationProxy(IResponder.class, responder);
+
+		button = new JButton("Stuff 5");
+		frame.getContentPane().add(button);
+		ActionListenerEventHandler.bindActionEventHandler(button, registrationProxy, false).doStuff5();
+
+		button = new JButton("Stuff 6");
+		button.setActionCommand("A command 6");
+		frame.getContentPane().add(button);
+		ActionListenerEventHandler.bindActionEventHandler(button, registrationProxy, true).doStuff6(null);
+
         // Finish show UI
         
         frame.pack();

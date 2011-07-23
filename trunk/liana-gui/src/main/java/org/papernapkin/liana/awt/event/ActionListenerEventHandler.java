@@ -2,12 +2,15 @@ package org.papernapkin.liana.awt.event;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Method;
 
 import org.papernapkin.liana.event.GenericEventHandler;
+import org.papernapkin.liana.event.IResponderRegistrationCallback;
 import org.papernapkin.liana.event.ParameterInfo;
+import org.papernapkin.liana.event.ResponderRegistrationProxyHandler;
 
 /**
- * The class used to bind a responder to listen for action events.
+ * The class used to bindActionEventHandler a responder to listen for action events.
  * 
  * <p>
  *   In the following example, the JButton's action event is bound to the
@@ -77,5 +80,51 @@ public final class ActionListenerEventHandler extends GenericEventHandler
 		}
 		handler.bind(ACTION_PERFORMED, responder, responderMethod, params);
 		return handler;
+	}
+
+	/**
+	 * Binds the responder to the actionPerformed method call made by
+	 * eventSource to ActionListeners programatically.
+	 *
+	 * You first generate a registration proxy using
+	 * @link SwingResponderRegistrationTool#createRegistrationProxy.
+	 * You then call this method to start the bind.  You complete the bind by
+	 * executing the responder method on the proxy.  The proxy is returned from
+	 * this method for chaining.
+	 *
+	 * <code>
+	 *     // Create a proxy of this class that will be used for binding events.  It may be re-used for multiple bindings.
+	 *     IController registrationProxy = SwingResponderRegistrationTool.createRegistrationProxy(IController.class, this);
+	 *     ActionListenerEventHandler.bindActionEventHandler(myButton, registrationProxy, false).doAfterActionEvent();
+	 * </code>
+	 *
+	 * @param eventSource The object to register the action listener with.
+	 * @param registrationProxy The registration proxy create from the controller which has the responder method.
+	 * @param bindActionCommand If true, the ActionEvent's action command
+	 *                          string will be passed as the first argument
+	 *                          of the responder method.  The method must have
+	 *                          only one parameter of type String.
+	 * @return The registration proxy for chaining.
+	 */
+	public static <T> T bindActionEventHandler(Object eventSource, T registrationProxy, boolean bindActionCommand) {
+		final ActionListenerEventHandler handler =
+			new ActionListenerEventHandler(eventSource);
+		final ParameterInfo[] params;
+		if (bindActionCommand) {
+			params = new ParameterInfo[1];
+			params[0] =
+				new ParameterInfo(
+						0, ActionEvent.class, "getActionCommand"
+					);
+		} else {
+			params = new ParameterInfo[0];
+		}
+		ResponderRegistrationProxyHandler.registerCallback(registrationProxy, new IResponderRegistrationCallback() {
+			@Override
+			public void register(Object controller, Method responderMethod) {
+				handler.bind(ACTION_PERFORMED, controller, responderMethod, params);
+			}
+		});
+		return registrationProxy;
 	}
 }

@@ -6,7 +6,7 @@ import org.papernapkin.liana.event.GenericEventHandler;
 import org.papernapkin.liana.event.ParameterInfo;
 
 /**
- * The class used to bind a responder to listen for worker thread events.
+ * The class used to bindActionEventHandler a responder to listen for worker thread events.
  * 
  * @author pchapman
  */

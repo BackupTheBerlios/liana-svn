@@ -5,7 +5,7 @@
   <groupId>org.papernapkin.liana</groupId>
   <artifactId>liana-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.4.1</version>
+  <version>1.5.0</version>
   <name>Liana swing utility library parent project</name>
   <description>
     The parent project for a library of utility classes for swing and general
@@ -52,7 +52,6 @@
 
   <properties>
     <slf4j-version>1.4.2</slf4j-version>
-    <liana-version>1.4.1</liana-version>
   </properties>
 
   <build>
@@ -73,7 +72,12 @@
       <dependency>
         <groupId>org.papernapkin.liana</groupId>
         <artifactId>liana-util</artifactId>
-        <version>${liana-version}</version>
+        <version>1.5.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.papernapkin.liana</groupId>
+        <artifactId>liana-gui</artifactId>
+        <version>1.5.0</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -100,10 +104,16 @@
         <artifactId>slf4j-log4j12</artifactId>
         <version>${slf4j-version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-nop</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <modules>
+    <module>liana-example</module>
     <module>liana-gui</module>
     <module>liana-util</module>
   </modules>

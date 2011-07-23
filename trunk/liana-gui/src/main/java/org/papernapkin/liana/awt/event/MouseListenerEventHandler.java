@@ -1,17 +1,20 @@
 package org.papernapkin.liana.awt.event;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Method;
 
 import org.papernapkin.liana.event.GenericEventHandler;
 import org.papernapkin.liana.event.IEventCondition;
+import org.papernapkin.liana.event.IResponderRegistrationCallback;
 import org.papernapkin.liana.event.ParameterInfo;
+import org.papernapkin.liana.event.ResponderRegistrationProxyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The class used to bind a responder to listen for mouse events.  Currently,
+ * The class used to bindActionEventHandler a responder to listen for mouse events.  Currently,
  * only the mouse clicked type mouse event is handled due to the fact that
  * information provided by the MouseEvent passed to the listener is of specific
  * importance when responding to other mouse event types.  At this time, I do
@@ -63,7 +66,42 @@ public final class MouseListenerEventHandler extends GenericEventHandler
 		handler.bind(MOUSE_CLICKED, responder, responderMethod, params);
 		return handler;
 	}
-	
+
+	/**
+	 * Binds the responder to the mouseClicked method call made by
+	 * eventSource to MouseListeners programatically.
+	 *
+	 * You first generate a registration proxy using
+	 * @link SwingResponderRegistrationTool#createRegistrationProxy.
+	 * You then call this method to start the bind.  You complete the bind by
+	 * executing the responder method on the proxy.  The proxy is returned from
+	 * this method for chaining.
+	 *
+	 * The bound method must have no parameters.
+	 *
+	 * <code>
+	 *     // Create a proxy of this class that will be used for binding events.  It may be re-used for multiple bindings.
+	 *     IController registrationProxy = SwingResponderRegistrationTool.createRegistrationProxy(IController.class, this);
+	 *     MouseListenerEventHandler.bindMouseClickedEventHandler(myComponent, registrationProxy).doAfterClickEvent();
+	 * </code>
+	 *
+	 * @param eventSource The object to register the action listener with.
+	 * @param registrationProxy The registration proxy create from the controller which has the responder method.
+	 * @return The registration proxy for chaining.
+	 */
+	public static <T> T bindMouseClickedEventHandler(Object eventSource, T registrationProxy) {
+		final MouseListenerEventHandler handler =
+			new MouseListenerEventHandler(eventSource, null);
+		final ParameterInfo[] params = new ParameterInfo[0];
+		ResponderRegistrationProxyHandler.registerCallback(registrationProxy, new IResponderRegistrationCallback() {
+			@Override
+			public void register(Object controller, Method responderMethod) {
+				handler.bind(MOUSE_CLICKED, controller, responderMethod, params);
+			}
+		});
+		return registrationProxy;
+	}
+
 	/**
 	 * Binds the responder to the mouseClicked method call made by
 	 * eventSource to MouseListeners but only calls the responder method if
@@ -86,7 +124,43 @@ public final class MouseListenerEventHandler extends GenericEventHandler
 		handler.bind(MOUSE_CLICKED, responder, responderMethod, params);
 		return handler;
 	}
-	
+
+	/**
+	 * Binds the responder to the mouseClicked method call made by
+	 * eventSource to MouseListeners programatically  but only calls the
+	 * responder method if the click event was in response to a double-click.
+	 *
+	 * You first generate a registration proxy using
+	 * @link SwingResponderRegistrationTool#createRegistrationProxy.
+	 * You then call this method to start the bind.  You complete the bind by
+	 * executing the responder method on the proxy.  The proxy is returned from
+	 * this method for chaining.
+	 *
+	 * The bound method must have no parameters.
+	 *
+	 * <code>
+	 *     // Create a proxy of this class that will be used for binding events.  It may be re-used for multiple bindings.
+	 *     IController registrationProxy = SwingResponderRegistrationTool.createRegistrationProxy(IController.class, this);
+	 *     MouseListenerEventHandler.bindMouseDoubleClickedEventHandler(myComponent, registrationProx).doAfterDoubleClickEvent();
+	 * </code>
+	 *
+	 * @param eventSource The object to register the action listener with.
+	 * @param registrationProxy The registration proxy create from the controller which has the responder method.
+	 * @return The registration proxy for chaining.
+	 */
+	public static <T> T bindMouseDoubleClickedEventHandler(Object eventSource, T registrationProxy) {
+		final MouseListenerEventHandler handler =
+			new MouseListenerEventHandler(eventSource, DoubleClickEventCondition);
+		final ParameterInfo[] params = new ParameterInfo[0];
+		ResponderRegistrationProxyHandler.registerCallback(registrationProxy, new IResponderRegistrationCallback() {
+			@Override
+			public void register(Object controller, Method responderMethod) {
+				handler.bind(MOUSE_CLICKED, controller, responderMethod, params);
+			}
+		});
+		return registrationProxy;
+	}
+
 	/**
 	 * Binds the responder to the mouseClicked method call made by
 	 * eventSource to MouseListeners but only calls the responder method if
@@ -117,7 +191,48 @@ public final class MouseListenerEventHandler extends GenericEventHandler
 		handler.bind(MOUSE_RELEASED, responder, responderMethod, params);
 		return handler;
 	}
-	
+
+	/**
+	 * Binds the responder to the mouseClicked method call made by
+	 * eventSource to MouseListeners programatically.
+	 *
+	 * You first generate a registration proxy using
+	 * @link SwingResponderRegistrationTool#createRegistrationProxy.
+	 * You then call this method to start the bind.  You complete the bind by
+	 * executing the responder method on the proxy.  The proxy is returned from
+	 * this method for chaining.
+	 *
+	 * The bound method must take three parameters, a java.awt.Component, which
+	 * is the component clicked, an int which is the x coordinate of the mouse,
+	 * and an int which is the y coordinate of the mouse -- in that order.
+	 *
+	 * <code>
+	 *     // Create a proxy of this class that will be used for binding events.  It may be re-used for multiple bindings.
+	 *     IController registrationProxy = SwingResponderRegistrationTool.createRegistrationProxy(IController.class, this);
+	 *     MouseListenerEventHandler.bindMousePopupClickedEventHandler(myComponent, registrationProxy).doAfterPopupEvent(null, 0, 0);
+	 * </code>
+	 *
+	 * @param eventSource The object to register the action listener with.
+	 * @param registrationProxy The registration proxy create from the controller which has the responder method.
+	 * @return The registration proxy for chaining.
+	 */
+	public static <T> T bindMousePopupClickedEventHandler(Object eventSource, T registrationProxy) {
+		final MouseListenerEventHandler handler =
+			new MouseListenerEventHandler(eventSource, PopupClickEventCondition);
+		final ParameterInfo[] params = new ParameterInfo[3];
+		params[0] = new ParameterInfo(0, MouseEvent.class, "getComponent");
+		params[1] = new ParameterInfo(0, MouseEvent.class, "getX");
+		params[2] = new ParameterInfo(0, MouseEvent.class, "getY");
+		ResponderRegistrationProxyHandler.registerCallback(registrationProxy, new IResponderRegistrationCallback() {
+			@Override
+			public void register(Object controller, Method responderMethod) {
+				handler.bind(MOUSE_PRESSED, controller, responderMethod, params);
+				handler.bind(MOUSE_RELEASED, controller, responderMethod, params);
+			}
+		});
+		return registrationProxy;
+	}
+
 	private static final IEventCondition DoubleClickEventCondition = new IEventCondition() {
 		@Override
 		public boolean testEvent(Method method, Object[] args) {

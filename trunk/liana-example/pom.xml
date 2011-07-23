@@ -11,16 +11,19 @@
     </parent>
 
     <groupId>org.papernapkin.liana</groupId>
-    <artifactId>liana-gui</artifactId>
+    <artifactId>liana-example</artifactId>
     <packaging>jar</packaging>
-    <name>Liana swing library</name>
+    <name>Example code for the Liana swing library</name>
     <description>
-    The liana sub-project which holds classes related to AWT and Swing
-    development.
+    The liana sub-project which holds example code.
     </description>
     <version>1.5.0</version>
 
     <dependencies>
+        <dependency>
+            <groupId>org.papernapkin.liana</groupId>
+            <artifactId>liana-gui</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.papernapkin.liana</groupId>
             <artifactId>liana-util</artifactId>
@@ -39,19 +42,13 @@
         -->
             <scope>provided</scope>
         </dependency>
-    <!--
-      - If the user of the liana library needs to provide the
-      - implementation of the lsf4j api that they ant to use.  The nop
-      - (no opp) implementation is available if no logging is wanted.
-      -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
+            <artifactId>slf4j-nop</artifactId>
         </dependency>
     </dependencies>
 </project>

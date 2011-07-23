@@ -23,10 +23,11 @@ import org.papernapkin.liana.awt.event.WindowDeiconifiedFor;
 import org.papernapkin.liana.awt.event.WindowIconifiedFor;
 import org.papernapkin.liana.awt.event.WindowListenerEventHandler;
 import org.papernapkin.liana.awt.event.WindowOpenedFor;
+import org.papernapkin.liana.event.ResponderRegistrationProxyHandler;
 import org.slf4j.LoggerFactory;
 
 /**
- * A tool that will bind the methods of responders to the appropriate component
+ * A tool that will bindActionEventHandler the methods of responders to the appropriate component
  * events based on annotations.
  * 
  * @author pchapman
@@ -49,6 +50,11 @@ public class AwtResponderRegistrationTool
 	public static void register(Object responder, Component component)
 	{
 		instance._register(responder, component);
+	}
+
+	public static <T> T createRegistrationProxy(Class<T> controllerInterface, T controller)
+	{
+		return ResponderRegistrationProxyHandler.createRegistrationProxy(controllerInterface, controller);
 	}
 	
 	protected void _register(Object responder, Component component) {

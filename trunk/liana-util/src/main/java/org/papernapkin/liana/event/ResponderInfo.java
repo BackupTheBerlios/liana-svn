@@ -19,10 +19,30 @@ final class ResponderInfo extends Object
 	// CONSTRUCTORS
 	
 	ResponderInfo(
+			Object responder, Method responderMethod,
+			ParameterInfo[] parameterBindings
+		)
+	{
+		super();
+		this.responder = responder;
+		if (parameterBindings == null) {
+			this.parameterBindings = new ParameterInfo[0];
+		} else {
+			this.parameterBindings = parameterBindings;
+		}
+		if (responderMethod.getParameterTypes().length !=parameterBindings.length) {
+			throw new IllegalArgumentException("The method " + responderMethod + " has the wrong number of arguments.");
+		}
+		if (! responderMethod.isAccessible()) {
+			responderMethod.setAccessible(true);
+		}
+		this.responderMethod = responderMethod;
+	}
+
+	ResponderInfo(
 			Object responder, String methodName,
 			ParameterInfo[] parameterBindings
 		)
-		throws NoSuchMethodException, SecurityException
 	{
 		super();
 		this.responder = responder;

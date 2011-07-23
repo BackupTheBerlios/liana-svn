@@ -10,9 +10,10 @@ import java.util.Set;
 import javax.swing.JTable;
 
 import org.papernapkin.liana.awt.event.AwtResponderRegistrationTool;
+import org.papernapkin.liana.event.ResponderRegistrationProxyHandler;
 
 /**
- * A tool that will bind the methods of responders to the appropriate component
+ * A tool that will bindActionEventHandler the methods of responders to the appropriate component
  * events based on annotations.
  * 
  * @author pchapman
@@ -39,7 +40,12 @@ public final class SwingResponderRegistrationTool extends AwtResponderRegistrati
 	{
 		instance._register(responder, component);
 	}
-	
+
+	public static <T> T createRegistrationProxy(Class<T> controllerInterface, T controller)
+	{
+		return ResponderRegistrationProxyHandler.createRegistrationProxy(controllerInterface, controller);
+	}
+
 	@Override
 	protected void _register(Object responder, Component component) {
 		super._register(responder, component);

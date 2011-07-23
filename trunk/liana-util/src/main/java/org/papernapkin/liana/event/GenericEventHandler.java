@@ -190,49 +190,73 @@ public abstract class GenericEventHandler
 			ParameterInfo[] parameterBindings
 		)
 	{
-		boolean found = false;
-		if (eventMethod == null) {
-			found = true;
-		} else {
-			Method[] methods = emulatedClass.getMethods();
-			for (Method m : methods) {
-				if (m.getName().equals(eventMethod)) {
-					// TODO ensure the event's signature is correct and that
-					//      it is accessable
-					found = true;
-					break;
-				}
-			}
-		}
-		if (! found) {
-			throw new IllegalArgumentException(
-					"No methods with the name " + eventMethod +
-					" exists for " + emulatedClass.toString() + '.'
-				);
-		}
 		synchronized (lock) {
 			if (eventSourceReference == null) {
 				return this;
 			}
 			Object source = eventSourceReference.get();
 			if (source != null) {
-				try {
-					if (parameterBindings == null) {
-						parameterBindings = new ParameterInfo[0];
-					}
-					responders.put(
-							eventMethod, new ResponderInfo(
-									responder, responderMethod,
-									parameterBindings
-								)
-						);
-				} catch (NoSuchMethodException nsme) {
-					throw new IllegalArgumentException(
-							"The responder method " + responderMethod +
-							" either does not exist, or requires parameters" +
-							" of the wrong number of type."
-						);
-				} catch (SecurityException se) {}
+				if (parameterBindings == null) {
+					parameterBindings = new ParameterInfo[0];
+				}
+				responders.put(
+						eventMethod, new ResponderInfo(
+								responder, responderMethod,
+								parameterBindings
+							)
+					);
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * Binds the given event listener method to the responder objects's
+	 * method.  Once the emulated listener's method with the indicated name is
+	 * called from the event source, the responder's method will be called.
+	 *
+	 * Any type of Object can be used for responder and any method can be used
+	 * as responder method as long as it does not require any arguments.
+	 * However, only one bind can be made for each eventMethod.  If a responder
+	 * method is already bound to the eventMethod, the older bind is discarded
+	 * and the new responder method is bound.
+	 *
+	 * @param eventMethod The name of the event listener method.  The emulated
+	 *                    listener will listen for event calls to the method
+	 *                    with this name.  If eventMethod is null, this
+	 *                    responder will be bound as the default responder.
+	 * @param responder The object that whose method will be called in response
+	 *                  to the event.  This class does not have to be public
+	 *                  unless the application is an unsigned applet or
+	 *                  unsigned webstart application.
+	 * @param responderMethod The method of the responder object that will be
+	 *                        called in response to the event.  This method
+	 *                        must be public and either not require any
+	 *                        arguments or require only the parameters set up
+	 *                        in binding.
+	 * @param parameterBindings The bindings for the responder method.
+	 * @return this for chaining
+	 */
+	protected GenericEventHandler bind(
+			String eventMethod, Object responder, Method responderMethod,
+			ParameterInfo[] parameterBindings
+		)
+	{
+		synchronized (lock) {
+			if (eventSourceReference == null) {
+				return this;
+			}
+			Object source = eventSourceReference.get();
+			if (source != null) {
+				if (parameterBindings == null) {
+					parameterBindings = new ParameterInfo[0];
+				}
+				responders.put(
+						eventMethod, new ResponderInfo(
+								responder, responderMethod,
+								parameterBindings
+							)
+					);
 			}
 		}
 		return this;
