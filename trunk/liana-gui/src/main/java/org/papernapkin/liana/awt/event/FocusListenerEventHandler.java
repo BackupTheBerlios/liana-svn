@@ -1,7 +1,7 @@
 package org.papernapkin.liana.awt.event;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.lang.reflect.Method;
 
 import org.papernapkin.liana.event.GenericEventHandler;
@@ -41,7 +41,7 @@ public final class FocusListenerEventHandler extends GenericEventHandler
 		throws IllegalArgumentException
 	{
 		super(
-				ActionListener.class, eventSource,
+				FocusListener.class, eventSource,
 				REGISTER_METHOD, UNREGISTER_METHOD
 			);
 	}
@@ -74,7 +74,7 @@ public final class FocusListenerEventHandler extends GenericEventHandler
 			params = new ParameterInfo[1];
 			params[0] =
 				new ParameterInfo(
-						0, ActionEvent.class, "isTemporary"
+						0, FocusEvent.class, "isTemporary"
 					);
 		} else {
 			params = new ParameterInfo[0];
@@ -115,7 +115,7 @@ public final class FocusListenerEventHandler extends GenericEventHandler
 			params = new ParameterInfo[1];
 			params[0] =
 				new ParameterInfo(
-						0, ActionEvent.class, "isTemporary"
+						0, FocusEvent.class, "isTemporary"
 					);
 		} else {
 			params = new ParameterInfo[0];
@@ -157,7 +157,7 @@ public final class FocusListenerEventHandler extends GenericEventHandler
 			params = new ParameterInfo[1];
 			params[0] =
 				new ParameterInfo(
-						0, ActionEvent.class, "isTemporary"
+						0, FocusEvent.class, "isTemporary"
 					);
 		} else {
 			params = new ParameterInfo[0];
@@ -198,7 +198,7 @@ public final class FocusListenerEventHandler extends GenericEventHandler
 			params = new ParameterInfo[1];
 			params[0] =
 				new ParameterInfo(
-						0, ActionEvent.class, "isTemporary"
+						0, FocusEvent.class, "isTemporary"
 					);
 		} else {
 			params = new ParameterInfo[0];
