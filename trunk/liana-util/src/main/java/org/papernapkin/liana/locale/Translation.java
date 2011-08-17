@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -136,7 +137,17 @@ public class Translation
 	 * @return The translated text.
 	 */
 	public String getString(String key, Object ... params) {
-		String s = bundle.getString(key).trim();
+		String s;
+
+		// Look up the string.
+		try {
+			s = bundle.getString(key).trim();
+		} catch (MissingResourceException e) {
+			LoggerFactory.getLogger(getClass()).warn("Unable to find string {}", key, e);
+			return null;
+		}
+		
+		// Replace placeholders with param values
 		StringBuilder sb;
 		String val;
 		for (int i = 0; i < params.length; i++) {

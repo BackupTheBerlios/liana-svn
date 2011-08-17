@@ -26,6 +26,7 @@ public class ValidationLabel extends JLabel
 	
 	private static final String EMPTY_IMAGE_PATH = "org/papernapkin/liana/resources/images/EmptyDot.png";
 	private static final String REQUIRED_IMAGE_PATH = "org/papernapkin/liana/resources/images/YellowDot.png";
+	//TODO Translations are needed
 	private static final String REQUIRED_TOOLTIP_TEXT = "This is a required field";
 	private static final String ERROR_IMAGE_PATH = "org/papernapkin/liana/resources/images/RedDot.png";
 	private static final String VALID_IMAGE_PATH = "org/papernapkin/liana/resources/images/GreenDot.png";
