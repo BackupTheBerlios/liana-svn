@@ -34,8 +34,17 @@ public abstract class NotifyingWorkerThread extends Thread
 	}
 	
 	private WorkerThreadEventNotifier notifier = new WorkerThreadEventNotifier();
+
 	private NotifyingWorkerThread dependency;
-	
+	/**
+	 * Sets a dependency thread which must complete sucessfully before this will complete.
+	 * Note that this will only have an effect if the dependency is set before calling
+	 * Thread.start().
+	 */
+	public void setDependency(NotifyingWorkerThread dependency) {
+		this.dependency = dependency;
+	}
+
 	/**
 	 * Adds a new listener to be notified of status.
 	 * @param listener The listener to add.

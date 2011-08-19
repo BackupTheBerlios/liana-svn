@@ -17,7 +17,7 @@ import javax.swing.table.AbstractTableModel;
  * 
  * <p>This model should only be used if the items held in this model are not
  * contained in a usable data structure elsewhere.  See the warning in the
- * javadoc of {@link GenericTableBoxModel} for more detail.
+ * javadoc of {@link GenericTableModel} for more detail.
  * 
  * @author pchapman
  */
@@ -25,9 +25,6 @@ import javax.swing.table.AbstractTableModel;
 public abstract class ListTableModel<T> extends AbstractTableModel
 	implements GenericTableModel<T>
 {
-	/**
-	 * @see org.papernapkin.liana.swing.model.GenericTableModel#getItemAt(int)
-	 */
 	@Override
 	public T getObjectAt(int row) {
 		if (row > -1 && row < data.size()) {
@@ -168,6 +165,19 @@ public abstract class ListTableModel<T> extends AbstractTableModel
 		if (index > -1) {
 			removeObject(index);
 		}
+	}
+
+	/**
+	 * Removes all current data and replaces it with the given data.
+	 *
+	 * @param data The collection of data to hold in the model.
+	 */
+	public void replaceObjects(Collection<T> data) {
+		this.data.clear();
+		for (T obj : data) {
+			data.add(obj);
+		}
+		fireTableDataChanged();
 	}
 
 	/**
