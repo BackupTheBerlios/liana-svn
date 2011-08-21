@@ -205,6 +205,16 @@ public class ListComboBoxModel<T> extends AbstractListModel
 	}
 
 	/**
+	 * Removes all current data and replaces it with the given data.
+	 *
+	 * @param data The collection of data to hold in the model.
+	 */
+	public void replaceObjects(Collection<T> data) {
+		clear();
+		addObjects(data);
+	}
+
+	/**
 	 * Sorts the data in the list using the given comparator.
 	 * 
 	 * @param comparator The comparator to use when sorting the list.

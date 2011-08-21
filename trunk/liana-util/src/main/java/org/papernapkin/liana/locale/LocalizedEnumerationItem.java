@@ -71,11 +71,16 @@ public class LocalizedEnumerationItem<T extends Enum>
 				localizedString = trans.getString(baseName + enums[i].name());
 				if (localizedString == null) {
 					// Fall back to default
-					localizedString = enums[i].name();
+					localizedString = enums[i].toString();
 				}
 				items[i] = new LocalizedEnumerationItem<T>(enums[i], localizedString);
 			}
 			return items;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return localizedString;
 	}
 }
