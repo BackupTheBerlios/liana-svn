@@ -104,16 +104,20 @@ public abstract class NotifyingWorkerThread extends Thread
 		} else {
 			notifyListeners(
 				new WorkerThreadEvent(
-					this, Translation.getTranslation(NotifyingWorkerThread.class).getString("label.waiting", dependency.getName())
+					this, Translation.getTranslation(NotifyingWorkerThread.class).getString("label.waiting.dependency", dependency.getName())
 				)
 			);
-			while (dependency.isAlive() || dependency.isSuccessful() == null) {
+			if (!dependency.isAlive()) {
+				dependency.start();
 				try {
-					sleep(100);
+					dependency.join();
 				} catch (InterruptedException e) {}
 			}
 			if (test(dependency.isSuccessful())) {
 				execute();
+			} else {
+				this.success = false;
+				notifyListeners(new WorkerThreadEvent(this, WorkerThreadEvent.Type.WORK_STOP));
 			}
 		}
 	}

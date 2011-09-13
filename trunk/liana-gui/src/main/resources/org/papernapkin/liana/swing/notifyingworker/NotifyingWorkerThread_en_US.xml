@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- US English translation text for the Work Notification Window -->
+	<entry key="label.waiting.dependency">Waiting on dependency.</entry>
+</properties>
