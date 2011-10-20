@@ -13,7 +13,7 @@
     <groupId>org.papernapkin.liana</groupId>
     <artifactId>liana-example</artifactId>
     <packaging>jar</packaging>
-    <name>Example code for the Liana swing library</name>
+    <name>Liana Examples</name>
     <description>
     The liana sub-project which holds example code.
     </description>

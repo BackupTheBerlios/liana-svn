@@ -43,8 +43,15 @@ public class LocalizedEnumerationItem<T extends Enum>
 		if (enums == null || enums.length == 0) {
 			return new LocalizedEnumerationItem[0];
 		} else {
-			LocalizedEnumerationItem<T>[] items = new LocalizedEnumerationItem[enums.length];
-			Translation trans = Translation.getTranslation(items[0].getClass());
+            Class clazz = ((Enum)enums[0]).getDeclaringClass();
+			Translation trans = Translation.getTranslation(clazz);
+            if (trans == null) {
+                // See if this has an enclosing class
+                clazz = clazz.getEnclosingClass();
+                if (clazz != null) {
+                    trans = Translation.getTranslation(clazz);
+                }
+            }
 			return getLocalizedItems(trans, enums);
 		}
 	}
@@ -68,7 +75,7 @@ public class LocalizedEnumerationItem<T extends Enum>
 			String baseName = enums[0].getClass().getName() + ".";
 			String localizedString;
 			for (int i = 0; i < enums.length; i++) {
-				localizedString = trans.getString(baseName + enums[i].name());
+				localizedString = trans == null ? null : trans.getString(baseName + enums[i].name());
 				if (localizedString == null) {
 					// Fall back to default
 					localizedString = enums[i].toString();
