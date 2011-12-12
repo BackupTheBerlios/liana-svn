@@ -1,6 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
->
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+        >
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.papernapkin.liana</groupId>
   <artifactId>liana-parent</artifactId>
@@ -51,7 +54,8 @@
   </developers>
 
   <properties>
-    <slf4j-version>1.4.2</slf4j-version>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <slf4j-version>1.4.2</slf4j-version>
   </properties>
 
   <build>

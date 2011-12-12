@@ -11,7 +11,7 @@ import org.papernapkin.liana.event.ResponderRegistrationProxyHandler;
 import java.lang.reflect.Method;
 
 /**
- * The class used to bindActionEventHandler a responder to listen for list selection events.
+ * The class used to register a responder to listen for list selection events.
  * 
  * @author pchapman
  */
